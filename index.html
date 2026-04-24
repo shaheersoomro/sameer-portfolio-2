@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BlendArt — 3D Artist & Blender Specialist</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Playfair+Display:ital,wght@0,400;1,400;1,600&display=swap" rel="stylesheet"/>
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+  <style>
+    /* ─── TOKENS ─────────────────────────────── */
+    :root {
+      --ink:    #090909;
+      --ink2:   #0f0f0f;
+      --card:   #111111;
+      --border: rgba(240,236,226,0.07);
+      --ivory:  #f0ece2;
+      --dim:    rgba(240,236,226,0.42);
+      --dim2:   rgba(240,236,226,0.18);
+      --amber:  #d4a853;
+      --amber2: rgba(212,168,83,0.15);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--ink);
+      color: var(--ivory);
+      font-family: 'DM Mono', monospace;
+      overflow-x: hidden;
+    }
+
+    /* grain */
+    body::after {
+      content: '';
+      position: fixed; inset: 0; z-index: 9000; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.035'/%3E%3C/svg%3E");
+      opacity: .38;
+    }
+
+    /* ─── UTILS ──────────────────────────────── */
+    .amber  { color: var(--amber); }
+    .eyebrow {
+      font-size: .58rem; letter-spacing: .38em; text-transform: uppercase;
+      color: var(--amber); display: block; margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.8rem, 5vw, 4.5rem);
+      letter-spacing: .04em; line-height: 1;
+    }
+    .section-sub {
+      font-size: .7rem; letter-spacing: .06em; line-height: 1.9;
+      color: var(--dim); margin-top: 1rem; max-width: 520px;
+    }
+    .reveal { opacity: 0; transform: translateY(44px); }
+
+    /* ─── NAV ────────────────────────────────── */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.4rem 3.5rem;
+      transition: background .4s, backdrop-filter .4s;
+    }
+    #navbar.scrolled {
+      background: rgba(9,9,9,0.88);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem; letter-spacing: .18em;
+      color: var(--ivory); text-decoration: none;
+    }
+    .nav-logo span { color: var(--amber); }
+    .nav-links { display: flex; align-items: center; gap: 2.2rem; list-style: none; }
+    .nav-links a {
+      font-size: .58rem; letter-spacing: .26em; text-transform: uppercase;
+      color: var(--dim); text-decoration: none; transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--ivory); }
+    .nav-cta {
+      font-size: .58rem; letter-spacing: .26em; text-transform: uppercase;
+      color: var(--ink); background: var(--amber);
+      padding: 8px 22px; text-decoration: none;
+      transition: opacity .2s;
+    }
+    .nav-cta:hover { opacity: .8; }
+    .nav-burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+    .nav-burger span { display: block; width: 24px; height: 1px; background: var(--ivory); transition: .3s; }
+
+    /* ─── HERO ───────────────────────────────── */
+    .hero {
+      height: 100vh;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 0 3.5rem 5.5rem;
+      padding-top: 600px;
+      position: relative; overflow: hidden;
+    }
+    .hero-watermark {
+      position: absolute; top: 46%; left: 50%;
+      transform: translate(-50%,-50%);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(7rem, 19vw, 18rem);
+      white-space: nowrap;
+      color: rgba(240,236,226,0.025);
+      user-select: none; pointer-events: none; letter-spacing: -.02em;
+    }
+    .hero-eyebrow {
+      font-size: .6rem; letter-spacing: .4em; text-transform: uppercase;
+      color: var(--amber); margin-bottom: 1.2rem;
+      opacity: 0; transform: translateY(16px);
+    }
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3.8rem, 9.5vw, 9rem);
+      line-height: .88; letter-spacing: .01em;
+      opacity: 0; transform: translateY(44px);
+    }
+    .hero-title em {
+      font-family: 'Playfair Display', serif;
+      font-style: italic; color: var(--amber);
+    }
+    .hero-row {
+      display: flex; align-items: flex-end; gap: 3rem;
+      margin-top: 2.2rem; opacity: 0; transform: translateY(20px);
+    }
+    .hero-sub {
+      font-size: .7rem; letter-spacing: .07em; line-height: 1.95;
+      color: var(--dim); max-width: 360px;
+    }
+    .hero-btns { display: flex; gap: 1rem; flex-shrink: 0; }
+    .btn-primary-custom {
+      font-size: .58rem; letter-spacing: .26em; text-transform: uppercase;
+      color: var(--ink); background: var(--amber);
+      padding: 11px 28px; text-decoration: none; transition: opacity .2s;
+    }
+    .btn-primary-custom:hover { opacity: .8; color: var(--ink); }
+    .btn-ghost {
+      font-size: .58rem; letter-spacing: .26em; text-transform: uppercase;
+      color: var(--ivory);
+      padding: 10px 28px; text-decoration: none;
+      border: 1px solid var(--border); transition: border-color .2s;
+    }
+    .btn-ghost:hover { border-color: var(--amber); color: var(--amber); }
+    .hero-vline {
+      position: absolute; bottom: 0; left: 3.5rem;
+      width: 1px; height: 0; background: var(--amber);
+    }
+
+    /* ─── SCROLL / VIDEO SECTION ─────────────── */
+    .scroll-section { position: relative; height: 400vh; }
+    .sticky-wrap {
+      position: sticky; top: 0; height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; overflow: hidden;
+    }
+    .vid-meta {
+      display: flex; justify-content: space-between; align-items: center;
+      width: min(960px, 90vw); margin-bottom: 1.2rem; opacity: 0;
+    }
+    .vid-meta-label {
+      font-size: .55rem; letter-spacing: .3em; text-transform: uppercase; color: var(--dim);
+    }
+    .vid-meta-label span { color: var(--amber); }
+    .video-wrap {
+      position: relative; width: min(960px, 90vw); max-height: 70vh; overflow: hidden;
+    }
+    #blender-video {
+      display: block; width: 100%; height: 100%; object-fit: cover;
+      mix-blend-mode: lighten;
+      filter: brightness(1.1) contrast(1.05) saturate(1.08);
+    }
+    .video-wrap::before {
+      content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+      background:
+        linear-gradient(to right,  var(--ink) 0%, transparent 10%, transparent 90%, var(--ink) 100%),
+        linear-gradient(to bottom, var(--ink) 0%, transparent 8%,  transparent 92%, var(--ink) 100%);
+    }
+    .vid-glow {
+      position: absolute; inset: -80px; z-index: -1; pointer-events: none;
+      background: radial-gradient(ellipse 65% 45% at 50% 50%, rgba(212,168,83,0.07) 0%, transparent 70%);
+    }
+    .vid-progress-row {
+      width: min(960px, 90vw); margin-top: 1.4rem;
+      display: flex; align-items: center; gap: 1.2rem; opacity: 0;
+    }
+    .progress-track {
+      flex: 1; height: 1px; background: rgba(240,236,226,0.1); position: relative;
+    }
+    .progress-fill { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: var(--amber); }
+    .progress-dot {
+      position: absolute; top: 50%; left: 0%; transform: translate(-50%,-50%);
+      width: 6px; height: 6px; border-radius: 50%; background: var(--amber);
+    }
+    .progress-time {
+      font-size: .55rem; letter-spacing: .2em; color: var(--dim); flex-shrink: 0; width: 52px; text-align: right;
+    }
+
+    /* ─── ABOUT ──────────────────────────────── */
+    .about-section {
+      padding: 9rem 3.5rem;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6rem;
+      max-width: 1200px; margin: 0 auto; align-items: center;
+    }
+    .about-img-wrap {
+      position: relative;
+    }
+    .about-img-wrap img {
+      width: 100%; display: block;
+      filter: grayscale(20%) contrast(1.05);
+    }
+    .about-img-wrap::before {
+      content: '';
+      position: absolute; inset: -12px 12px 12px -12px;
+      border: 1px solid var(--border); z-index: -1;
+    }
+    .about-img-wrap::after {
+      content: '';
+      position: absolute; bottom: -20px; right: -20px;
+      width: 120px; height: 120px;
+      background: var(--amber2);
+      border: 1px solid rgba(212,168,83,0.25);
+      z-index: -1;
+    }
+    .about-text {}
+    .about-text p {
+      font-size: .72rem; line-height: 2.1; letter-spacing: .05em; color: var(--dim);
+      margin-bottom: 1rem;
+    }
+    .stats-row {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-top: 2.5rem;
+    }
+    .stat-box {
+      border: 1px solid var(--border); padding: 1.4rem 1rem;
+      text-align: center;
+    }
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.8rem; letter-spacing: .05em; line-height: 1;
+      color: var(--amber); display: block;
+    }
+    .stat-label {
+      font-size: .55rem; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--dim); margin-top: .4rem; display: block;
+    }
+
+    /* ─── MARQUEE ─────────────────────────────── */
+    .marquee-section {
+      overflow: hidden; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      padding: 1rem 0; background: var(--ink2);
+    }
+    .marquee-track {
+      display: flex; width: max-content;
+      animation: marquee 22s linear infinite;
+    }
+    .marquee-item {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem; letter-spacing: .28em; text-transform: uppercase;
+      color: var(--dim2); white-space: nowrap; padding: 0 2.5rem;
+    }
+    .marquee-item .dot { color: var(--amber); margin: 0 .6rem; }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* ─── SERVICES ───────────────────────────── */
+    .services-section { padding: 9rem 3.5rem; max-width: 1200px; margin: 0 auto; }
+    .services-header { margin-bottom: 4rem; }
+    .services-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5px; background: var(--border); }
+    .service-card {
+      background: var(--card); padding: 3rem 2.5rem;
+      transition: background .3s;
+      position: relative; overflow: hidden;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute; bottom: 0; left: 0; width: 0; height: 2px;
+      background: var(--amber); transition: width .4s ease;
+    }
+    .service-card:hover::before { width: 100%; }
+    .service-card:hover { background: #141414; }
+    .service-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3.5rem; letter-spacing: .04em;
+      color: rgba(212,168,83,0.12); line-height: 1;
+      margin-bottom: 1.5rem; display: block;
+    }
+    .service-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem; letter-spacing: .1em; margin-bottom: 1rem;
+    }
+    .service-desc {
+      font-size: .68rem; line-height: 1.95; color: var(--dim); letter-spacing: .04em;
+      margin-bottom: 1.5rem;
+    }
+    .service-list { list-style: none; }
+    .service-list li {
+      font-size: .6rem; letter-spacing: .12em; color: var(--dim2);
+      padding: .35rem 0; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: .5rem;
+    }
+    .service-list li::before { content: '—'; color: var(--amber); flex-shrink: 0; }
+
+    /* ─── PORTFOLIO ──────────────────────────── */
+    .portfolio-section { padding: 9rem 3.5rem; max-width: 1200px; margin: 0 auto; }
+    .portfolio-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 4rem;
+    }
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5px; background: var(--border);
+    }
+    .portfolio-item {
+      position: relative; overflow: hidden; background: var(--card);
+      aspect-ratio: 4/3;
+      cursor: pointer;
+    }
+    .portfolio-item img {
+      width: 100%; height: 100%; object-fit: cover;
+      display: block; filter: grayscale(30%) brightness(.85);
+      transition: filter .5s, transform .6s;
+    }
+    .portfolio-item:hover img { filter: grayscale(0%) brightness(1); transform: scale(1.04); }
+    .portfolio-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(9,9,9,0.9) 0%, transparent 55%);
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 1.8rem; opacity: 0; transition: opacity .4s;
+    }
+    .portfolio-item:hover .portfolio-overlay { opacity: 1; }
+    .portfolio-cat {
+      font-size: .52rem; letter-spacing: .3em; text-transform: uppercase;
+      color: var(--amber); margin-bottom: .4rem;
+    }
+    .portfolio-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem; letter-spacing: .1em;
+    }
+    /* Placeholder for items without real images */
+    .portfolio-placeholder {
+      width: 100%; height: 100%;
+      background: linear-gradient(135deg, #141414 0%, #1a1a1a 100%);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .portfolio-placeholder-text {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem; letter-spacing: .2em;
+      color: rgba(212,168,83,0.25);
+    }
+    .view-all-link {
+      font-size: .58rem; letter-spacing: .26em; text-transform: uppercase;
+      color: var(--amber); text-decoration: none;
+      display: flex; align-items: center; gap: .5rem;
+      transition: gap .2s;
+    }
+    .view-all-link:hover { gap: .9rem; color: var(--amber); }
+
+    /* ─── SKILLS ─────────────────────────────── */
+    .skills-section { padding: 9rem 3.5rem; background: var(--ink2); }
+    .skills-inner { max-width: 1200px; margin: 0 auto; }
+    .skills-header { margin-bottom: 4rem; }
+    .skills-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; }
+    .skill-group-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem; letter-spacing: .2em; color: var(--amber);
+      margin-bottom: 1.5rem; display: block;
+    }
+    .skill-tag-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 3rem; }
+    .skill-tag {
+      font-size: .58rem; letter-spacing: .2em; text-transform: uppercase;
+      padding: 6px 16px;
+      border: 1px solid var(--border); color: var(--dim); border-radius: 1px;
+      transition: border-color .2s, color .2s;
+    }
+    .skill-tag:hover { border-color: var(--amber); color: var(--amber); }
+
+    .skill-bar-item { margin-bottom: 1.8rem; }
+    .skill-bar-header {
+      display: flex; justify-content: space-between;
+      font-size: .58rem; letter-spacing: .18em; color: var(--dim2);
+      margin-bottom: .6rem;
+    }
+    .skill-bar-track {
+      height: 2px; background: rgba(240,236,226,0.08);
+    }
+    .skill-bar-fill {
+      height: 100%; width: 0%; background: var(--amber);
+      transition: width 1.2s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* ─── TESTIMONIALS ───────────────────────── */
+    .testimonials-section { padding: 9rem 3.5rem; max-width: 1200px; margin: 0 auto; }
+    .testimonials-header { margin-bottom: 4rem; }
+    .testimonials-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5px; background: var(--border); }
+    .testimonial-card {
+      background: var(--card); padding: 2.8rem 2.4rem;
+    }
+    .quote-mark {
+      font-family: 'Playfair Display', serif;
+      font-size: 4rem; line-height: .8; color: var(--amber);
+      margin-bottom: 1rem; display: block;
+    }
+    .testimonial-text {
+      font-size: .68rem; line-height: 2; color: var(--dim); letter-spacing: .04em;
+      margin-bottom: 2rem;
+      font-style: italic;
+    }
+    .testimonial-author {
+      display: flex; flex-direction: column; gap: .25rem;
+    }
+    .author-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem; letter-spacing: .15em;
+    }
+    .author-role {
+      font-size: .55rem; letter-spacing: .22em; text-transform: uppercase; color: var(--amber);
+    }
+    .author-company { font-size: .55rem; letter-spacing: .15em; color: var(--dim2); }
+
+    /* ─── CONTACT ────────────────────────────── */
+    .contact-section { padding: 9rem 3.5rem; }
+    .contact-inner { max-width: 1200px; margin: 0 auto; }
+    .contact-header { margin-bottom: 4rem; }
+    .contact-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; }
+    .contact-info-item {
+      display: flex; gap: 1.4rem; align-items: flex-start;
+      margin-bottom: 2.5rem;
+    }
+    .contact-icon {
+      width: 42px; height: 42px; border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      font-size: .85rem; color: var(--amber);
+    }
+    .contact-info-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem; letter-spacing: .15em; margin-bottom: .35rem;
+    }
+    .contact-info-val {
+      font-size: .64rem; letter-spacing: .1em; color: var(--dim); line-height: 1.8;
+    }
+    /* Form */
+    .form-field { margin-bottom: 1.4rem; }
+    .form-field input,
+    .form-field textarea {
+      width: 100%; background: var(--card);
+      border: 1px solid var(--border); border-radius: 0;
+      color: var(--ivory); padding: 14px 18px;
+      font-family: 'DM Mono', monospace; font-size: .68rem; letter-spacing: .08em;
+      outline: none; transition: border-color .2s; resize: none;
+    }
+    .form-field input:focus,
+    .form-field textarea:focus { border-color: var(--amber); }
+    .form-field input::placeholder,
+    .form-field textarea::placeholder { color: var(--dim2); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .btn-submit {
+      font-size: .6rem; letter-spacing: .3em; text-transform: uppercase;
+      color: var(--ink); background: var(--amber);
+      padding: 14px 36px; border: none; cursor: pointer;
+      font-family: 'DM Mono', monospace;
+      transition: opacity .2s; width: 100%;
+    }
+    .btn-submit:hover { opacity: .85; }
+
+    /* ─── FOOTER ─────────────────────────────── */
+    footer {
+      background: var(--ink2);
+      border-top: 1px solid var(--border);
+    }
+    .footer-main {
+      max-width: 1200px; margin: 0 auto; padding: 5rem 3.5rem 3rem;
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1.4fr; gap: 4rem;
+    }
+    .footer-brand-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem; letter-spacing: .18em;
+      color: var(--ivory); margin-bottom: 1rem; display: block;
+    }
+    .footer-brand-name span { color: var(--amber); }
+    .footer-brand-desc {
+      font-size: .65rem; line-height: 1.95; color: var(--dim); letter-spacing: .05em;
+      margin-bottom: 1.8rem;
+    }
+    .footer-col-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: .9rem; letter-spacing: .2em;
+      color: var(--ivory); margin-bottom: 1.5rem; display: block;
+    }
+    .footer-links { list-style: none; }
+    .footer-links li { margin-bottom: .8rem; }
+    .footer-links a {
+      font-size: .62rem; letter-spacing: .14em; color: var(--dim); text-decoration: none;
+      transition: color .2s;
+    }
+    .footer-links a:hover { color: var(--amber); }
+    .newsletter-input-row { display: flex; }
+    .newsletter-input {
+      flex: 1; background: var(--card); border: 1px solid var(--border);
+      border-right: none; color: var(--ivory); padding: 10px 14px;
+      font-family: 'DM Mono', monospace; font-size: .6rem; outline: none;
+      transition: border-color .2s;
+    }
+    .newsletter-input:focus { border-color: var(--amber); }
+    .newsletter-btn {
+      background: var(--amber); border: none; padding: 0 16px;
+      color: var(--ink); font-family: 'DM Mono', monospace;
+      font-size: .6rem; cursor: pointer; letter-spacing: .15em;
+      transition: opacity .2s;
+    }
+    .newsletter-btn:hover { opacity: .85; }
+    .footer-bottom {
+      border-top: 1px solid var(--border);
+      max-width: 1200px; margin: 0 auto;
+      padding: 1.6rem 3.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-copy { font-size: .55rem; letter-spacing: .2em; color: var(--dim2); }
+    .footer-copy span { color: var(--amber); }
+    .footer-made { font-size: .55rem; letter-spacing: .2em; color: var(--dim2); }
+
+    /* ─── RESPONSIVE ─────────────────────────── */
+    @media (max-width: 992px) {
+      .about-section   { grid-template-columns: 1fr; gap: 3rem; }
+      .services-grid   { grid-template-columns: 1fr; }
+      .portfolio-grid  { grid-template-columns: 1fr 1fr; }
+      .skills-layout   { grid-template-columns: 1fr; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .contact-layout  { grid-template-columns: 1fr; gap: 3rem; }
+      .footer-main     { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+      .portfolio-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    }
+    @media (max-width: 768px) {
+      #navbar { padding: 1.2rem 1.5rem; }
+      .nav-links { display: none; }
+      .nav-burger { display: flex; }
+      .hero { padding: 0 1.5rem 4rem; }
+      .hero-row { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+      .about-section, .services-section, .portfolio-section,
+      .skills-section .skills-inner,
+      .testimonials-section, .contact-inner { padding-left: 1.5rem; padding-right: 1.5rem; }
+      .services-section, .portfolio-section,
+      .testimonials-section, .contact-section { padding: 5rem 1.5rem; }
+      .about-section { padding: 5rem 1.5rem; }
+      .portfolio-grid  { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .footer-main { grid-template-columns: 1fr; padding: 3rem 1.5rem; gap: 2rem; }
+      .footer-bottom { flex-direction: column; gap: 6px; padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ NAV ══════════════════════════════════════ -->
+<nav id="navbar">
+  <a class="nav-logo" href="#">Blend<span>Art</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#testimonials">Testimonials</a></li>
+  </ul>
+  <a class="nav-cta" href="#contact">Hire Me</a>
+  <div class="nav-burger" id="burger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- ══ HERO ══════════════════════════════════════ -->
+<section class="hero" id="home">
+  <div class="hero-watermark">BLENDART</div>
+  <p class="hero-eyebrow">3D Artist &amp; Blender Specialist</p>
+  <h1 class="hero-title">
+    Bringing<br/>
+    Products to<br/>
+    <em>Life</em> with 3D
+  </h1>
+  <div class="hero-row">
+    <p class="hero-sub">
+      Stunning 3D models and visualizations that make your products stand out
+      in advertisements and marketing materials.
+    </p>
+    <div class="hero-btns">
+      <a class="btn-primary-custom" href="#portfolio">View My Work</a>
+      <a class="btn-ghost" href="#contact">Get in Touch</a>
+    </div>
+  </div>
+  <div class="hero-vline"></div>
+</section>
+
+<!-- ══ SCROLL VIDEO ══════════════════════════════ -->
+<section class="scroll-section" id="showcase">
+  <div class="sticky-wrap">
+    <div class="vid-meta" id="vidMeta">
+      <span class="vid-meta-label">Blender <span>Cycles</span> — HDR Lighting</span>
+      <span class="vid-meta-label">Scrub with scroll <span>↓</span></span>
+      <span class="vid-meta-label">4K · Motion Design</span>
+    </div>
+    <div class="video-wrap" id="videoWrap">
+      <div class="vid-glow"></div>
+      <video id="blender-video" src="X4G-CLIP-20001-0520.mp4" muted playsinline preload="auto"></video>
+    </div>
+    <div class="vid-progress-row" id="vidProgressRow">
+      <div class="progress-track">
+        <div class="progress-fill" id="pFill"></div>
+        <div class="progress-dot"  id="pDot"></div>
+      </div>
+      <span class="progress-time" id="pTime">0:00</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ MARQUEE ════════════════════════════════════ -->
+<div class="marquee-section">
+  <div class="marquee-track">
+    <!-- duplicated for seamless loop -->
+    <span class="marquee-item">Branding<span class="dot">✦</span></span>
+    <span class="marquee-item">Product Design<span class="dot">✦</span></span>
+    <span class="marquee-item">Digital Marketing<span class="dot">✦</span></span>
+    <span class="marquee-item">Art Direction<span class="dot">✦</span></span>
+    <span class="marquee-item">UI/UX Design<span class="dot">✦</span></span>
+    <span class="marquee-item">Motion Graphics<span class="dot">✦</span></span>
+    <span class="marquee-item">3D Animation<span class="dot">✦</span></span>
+    <span class="marquee-item">CGI Renders<span class="dot">✦</span></span>
+    <span class="marquee-item">Branding<span class="dot">✦</span></span>
+    <span class="marquee-item">Product Design<span class="dot">✦</span></span>
+    <span class="marquee-item">Digital Marketing<span class="dot">✦</span></span>
+    <span class="marquee-item">Art Direction<span class="dot">✦</span></span>
+    <span class="marquee-item">UI/UX Design<span class="dot">✦</span></span>
+    <span class="marquee-item">Motion Graphics<span class="dot">✦</span></span>
+    <span class="marquee-item">3D Animation<span class="dot">✦</span></span>
+    <span class="marquee-item">CGI Renders<span class="dot">✦</span></span>
+  </div>
+</div>
+
+<!-- ══ ABOUT ══════════════════════════════════════ -->
+<section class="about-section" id="about">
+  <div class="about-img-wrap reveal">
+    <img src="https://shaheersoomro.github.io/sameer-portfolio/assets/author2.png" alt="3D Artist" onerror="this.style.display='none';this.parentElement.style.background='#141414';this.parentElement.style.minHeight='480px'"/>
+  </div>
+  <div class="about-text reveal">
+    <span class="eyebrow">About Me</span>
+    <h2 class="section-title">Professional <span class="amber">3D Artist</span></h2>
+    <p class="section-sub" style="max-width:100%">Specializing in product visualization</p>
+    <p style="font-size:.7rem;line-height:2.1;letter-spacing:.05em;color:var(--dim);margin-top:1.5rem">
+      I'm passionate about creating stunning 3D visuals that tell stories and evoke
+      emotions. My journey in 3D art began as a hobby and has grown into a full-fledged
+      career where I get to bring ideas to life every day.
+    </p>
+    <p style="font-size:.7rem;line-height:2.1;letter-spacing:.05em;color:var(--dim);margin-top:.8rem">
+      When I'm not modeling or animating, you can find me teaching Blender techniques to
+      aspiring artists or contributing to open-source 3D projects.
+    </p>
+    <div class="stats-row" style="margin-top:2.5rem">
+      <div class="stat-box reveal">
+        <span class="stat-num" data-count="50">0</span>
+        <span class="stat-label">Projects Completed</span>
+      </div>
+      <div class="stat-box reveal">
+        <span class="stat-num" data-count="30">0</span>
+        <span class="stat-label">Happy Clients</span>
+      </div>
+      <div class="stat-box reveal">
+        <span class="stat-num" data-count="4">0</span>
+        <span class="stat-label">Years Experience</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SERVICES ═══════════════════════════════════ -->
+<section class="services-section" id="services">
+  <div class="services-header reveal">
+    <span class="eyebrow">What I Offer</span>
+    <h2 class="section-title">My Services</h2>
+    <p class="section-sub">Comprehensive 3D modeling and visualization services tailored for advertising and marketing needs.</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card reveal">
+      <span class="service-num">01</span>
+      <div class="service-title">Product Modeling</div>
+      <p class="service-desc">High-quality 3D models of your products with accurate dimensions and details, ready for advertisements, e-commerce, or presentations.</p>
+      <ul class="service-list">
+        <li>Photorealistic details</li>
+        <li>Multiple format exports</li>
+        <li>Optimized for rendering</li>
+      </ul>
+    </div>
+    <div class="service-card reveal">
+      <span class="service-num">02</span>
+      <div class="service-title">Advertising Renders</div>
+      <p class="service-desc">Stunning high-resolution renders of your products in various settings, perfect for print ads, digital campaigns, and social media.</p>
+      <ul class="service-list">
+        <li>Multiple angles</li>
+        <li>Custom lighting setups</li>
+        <li>Background integration</li>
+      </ul>
+    </div>
+    <div class="service-card reveal">
+      <span class="service-num">03</span>
+      <div class="service-title">Animation</div>
+      <p class="service-desc">Engaging product animations that showcase features, demonstrate functionality, or simply add visual appeal to your marketing materials.</p>
+      <ul class="service-list">
+        <li>360° rotations</li>
+        <li>Exploded views</li>
+        <li>Interactive elements</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PORTFOLIO ══════════════════════════════════ -->
+<section class="portfolio-section" id="portfolio">
+  <div class="portfolio-header">
+    <div class="reveal">
+      <span class="eyebrow">Selected Work</span>
+      <h2 class="section-title">My Portfolio</h2>
+    </div>
+    <a class="view-all-link reveal" href="#">View Full Portfolio →</a>
+  </div>
+  <div class="portfolio-grid">
+
+    <div class="portfolio-item reveal">
+      <img src="https://shaheersoomro.github.io/sameer-portfolio/assets/portfolio-6.png"
+           alt="Cosmetic Product"
+           onerror="this.style.display='none'"/>
+      <div class="portfolio-placeholder" style="display:none"><span class="portfolio-placeholder-text">Cosmetics</span></div>
+      <div class="portfolio-overlay">
+        <span class="portfolio-cat">Cosmetics</span>
+        <span class="portfolio-name">Cosmetic Product</span>
+      </div>
+    </div>
+
+    <div class="portfolio-item reveal">
+      <img src="https://shaheersoomro.github.io/sameer-portfolio/assets/portfolio-7.png"
+           alt="Electronics"
+           onerror="this.style.display='none'"/>
+      <div class="portfolio-overlay">
+        <span class="portfolio-cat">Electronics</span>
+        <span class="portfolio-name">Smartphone Model</span>
+      </div>
+    </div>
+
+    <div class="portfolio-item reveal">
+      <img src="https://shaheersoomro.github.io/sameer-portfolio/assets/portfolio-8.png"
+           alt="Packaging"
+           onerror="this.style.display='none'"/>
+      <div class="portfolio-overlay">
+        <span class="portfolio-cat">Packaging</span>
+        <span class="portfolio-name">Beverage Bottle</span>
+      </div>
+    </div>
+
+    <div class="portfolio-item reveal">
+      <img src="https://shaheersoomro.github.io/sameer-portfolio/assets/portfolio-9.png"
+           alt="Furniture"
+           onerror="this.style.display='none'"/>
+      <div class="portfolio-overlay">
+        <span class="portfolio-cat">Furniture</span>
+        <span class="portfolio-name">Modern Chair Design</span>
+      </div>
+    </div>
+
+    <div class="portfolio-item reveal">
+      <img src="https://shaheersoomro.github.io/sameer-portfolio/assets/portfolio-10.png"
+           alt="Automotive"
+           onerror="this.style.display='none'"/>
+      <div class="portfolio-overlay">
+        <span class="portfolio-cat">Automotive</span>
+        <span class="portfolio-name">Car Accessory Viz</span>
+      </div>
+    </div>
+
+    <div class="portfolio-item reveal">
+      <img src="https://shaheersoomro.github.io/sameer-portfolio/assets/portfolio-11.png"
+           alt="Jewelry"
+           onerror="this.style.display='none'"/>
+      <div class="portfolio-overlay">
+        <span class="portfolio-cat">Jewelry</span>
+        <span class="portfolio-name">Luxury Watch Render</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ SKILLS ══════════════════════════════════════ -->
+<section class="skills-section" id="skills">
+  <div class="skills-inner">
+    <div class="skills-header reveal">
+      <span class="eyebrow">Expertise</span>
+      <h2 class="section-title">My Skills</h2>
+      <p class="section-sub">A comprehensive set of tools and techniques to deliver top-quality 3D models and visualizations for advertising and marketing.</p>
+    </div>
+    <div class="skills-layout">
+      <div>
+        <span class="skill-group-title">Technical Skills</span>
+        <div class="skill-tag-grid">
+          <span class="skill-tag">Advanced Blender</span>
+          <span class="skill-tag">Substance Painter</span>
+          <span class="skill-tag">UV Unwrapping</span>
+          <span class="skill-tag">Retopology</span>
+        </div>
+        <span class="skill-group-title">Artistic Skills</span>
+        <div class="skill-tag-grid">
+          <span class="skill-tag">Photorealistic Texturing</span>
+          <span class="skill-tag">Lighting Setup</span>
+          <span class="skill-tag">Composition</span>
+          <span class="skill-tag">Color Theory</span>
+        </div>
+      </div>
+      <div>
+        <div class="skill-bar-item reveal" data-skill="95">
+          <div class="skill-bar-header"><span>Blender 3D</span><span>95%</span></div>
+          <div class="skill-bar-track"><div class="skill-bar-fill"></div></div>
+        </div>
+        <div class="skill-bar-item reveal" data-skill="90">
+          <div class="skill-bar-header"><span>Photorealistic Rendering</span><span>90%</span></div>
+          <div class="skill-bar-track"><div class="skill-bar-fill"></div></div>
+        </div>
+        <div class="skill-bar-item reveal" data-skill="92">
+          <div class="skill-bar-header"><span>Product Modeling</span><span>92%</span></div>
+          <div class="skill-bar-track"><div class="skill-bar-fill"></div></div>
+        </div>
+        <div class="skill-bar-item reveal" data-skill="88">
+          <div class="skill-bar-header"><span>Texture Painting</span><span>88%</span></div>
+          <div class="skill-bar-track"><div class="skill-bar-fill"></div></div>
+        </div>
+        <div class="skill-bar-item reveal" data-skill="85">
+          <div class="skill-bar-header"><span>Animation</span><span>85%</span></div>
+          <div class="skill-bar-track"><div class="skill-bar-fill"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TESTIMONIALS ═══════════════════════════════ -->
+<section class="testimonials-section" id="testimonials">
+  <div class="testimonials-header reveal">
+    <span class="eyebrow">Client Words</span>
+    <h2 class="section-title">Testimonials</h2>
+    <p class="section-sub">What my clients say about my 3D modeling and visualization services.</p>
+  </div>
+  <div class="testimonials-grid">
+
+    <div class="testimonial-card reveal">
+      <span class="quote-mark">"</span>
+      <p class="testimonial-text">The 3D renders of our new skincare line were absolutely stunning. They perfectly captured the premium quality of our products and were instrumental in our successful product launch campaign.</p>
+      <div class="testimonial-author">
+        <span class="author-name">Sarah Johnson</span>
+        <span class="author-role">Marketing Director</span>
+        <span class="author-company">BeautyCo</span>
+      </div>
+    </div>
+
+    <div class="testimonial-card reveal">
+      <span class="quote-mark">"</span>
+      <p class="testimonial-text">We needed high-quality 3D models of our new device for our website before the physical product was ready. The models were so accurate that customers couldn't tell they weren't photographs.</p>
+      <div class="testimonial-author">
+        <span class="author-name">Michael Chen</span>
+        <span class="author-role">Product Manager</span>
+        <span class="author-company">TechGadgets</span>
+      </div>
+    </div>
+
+    <div class="testimonial-card reveal">
+      <span class="quote-mark">"</span>
+      <p class="testimonial-text">Working together on our automotive client's campaign was a pleasure. The attention to detail in the models and the ability to make quick revisions saved us significant time and budget.</p>
+      <div class="testimonial-author">
+        <span class="author-name">David Wilson</span>
+        <span class="author-role">Creative Director</span>
+        <span class="author-company">AdAgency</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ CONTACT ════════════════════════════════════ -->
+<section class="contact-section" id="contact">
+  <div class="contact-inner">
+    <div class="contact-header reveal">
+      <span class="eyebrow">Let's Work Together</span>
+      <h2 class="section-title">Get In Touch</h2>
+      <p class="section-sub">Have a project in mind? Let's discuss how I can help bring your products to life with 3D art.</p>
+    </div>
+    <div class="contact-layout">
+      <div>
+        <div class="contact-info-item reveal">
+          <div class="contact-icon">✉</div>
+          <div>
+            <div class="contact-info-title">Email Me</div>
+            <div class="contact-info-val">hello@blendart.com<br/>contact@blendart.com</div>
+          </div>
+        </div>
+        <div class="contact-info-item reveal">
+          <div class="contact-icon">✆</div>
+          <div>
+            <div class="contact-info-title">Call Me</div>
+            <div class="contact-info-val">+1 (555) 123-4567<br/>Mon–Fri, 9am–5pm</div>
+          </div>
+        </div>
+        <div class="contact-info-item reveal">
+          <div class="contact-icon">◎</div>
+          <div>
+            <div class="contact-info-title">Location</div>
+            <div class="contact-info-val">San Francisco, CA<br/>Available for remote work worldwide</div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="form-row">
+          <div class="form-field"><input type="text" placeholder="Your Name"/></div>
+          <div class="form-field"><input type="email" placeholder="Your Email"/></div>
+        </div>
+        <div class="form-field"><input type="text" placeholder="Subject"/></div>
+        <div class="form-field"><textarea rows="6" placeholder="Your Message"></textarea></div>
+        <button class="btn-submit">Send Message</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ════════════════════════════════════ -->
+<footer>
+  <div class="footer-main">
+    <div>
+      <span class="footer-brand-name">Blend<span>Art</span></span>
+      <p class="footer-brand-desc">Professional 3D modeling and visualization services specializing in product advertising and marketing materials.</p>
+    </div>
+    <div>
+      <span class="footer-col-title">Quick Links</span>
+      <ul class="footer-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#portfolio">Portfolio</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div>
+      <span class="footer-col-title">Services</span>
+      <ul class="footer-links">
+        <li><a href="#services">Product Modeling</a></li>
+        <li><a href="#services">Advertising Renders</a></li>
+        <li><a href="#services">3D Animation</a></li>
+        <li><a href="#services">Concept Art</a></li>
+        <li><a href="#services">Packaging Design</a></li>
+      </ul>
+    </div>
+    <div>
+      <span class="footer-col-title">Newsletter</span>
+      <p style="font-size:.62rem;color:var(--dim);letter-spacing:.06em;line-height:1.8;margin-bottom:1.2rem">Subscribe for updates on my latest projects and 3D art tips.</p>
+      <div class="newsletter-input-row">
+        <input class="newsletter-input" type="email" placeholder="your@email.com"/>
+        <button class="newsletter-btn">→</button>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy"><span>©</span> 2024 BlendArt. All rights reserved.</span>
+    <span class="footer-made">Made with <span>♥</span> and Blender</span>
+  </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* ─── Navbar scroll state ─────────────────── */
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  /* ─── Hero entrance ──────────────────────── */
+  gsap.timeline({ defaults: { ease: 'power3.out' } })
+    .to('.hero-eyebrow', { opacity: 1, y: 0, duration: .9, delay: .3 })
+    .to('.hero-title',   { opacity: 1, y: 0, duration: 1.1 }, '-=.55')
+    .to('.hero-row',     { opacity: 1, y: 0, duration: .9  }, '-=.6')
+    .to('.hero-vline',   { height: 80, duration: 1.1, ease: 'power2.inOut' }, '-=1');
+
+  /* ─── Video scrub ─────────────────────────── */
+  const video   = document.getElementById('blender-video');
+  const pFill   = document.getElementById('pFill');
+  const pDot    = document.getElementById('pDot');
+  const pTime   = document.getElementById('pTime');
+  const wrap    = document.getElementById('videoWrap');
+  const vidMeta = document.getElementById('vidMeta');
+  const vidPRow = document.getElementById('vidProgressRow');
+  const fmt = s => `${Math.floor(s/60)}:${Math.floor(s%60).toString().padStart(2,'0')}`;
+
+  video.addEventListener('loadedmetadata', () => {
+    const dur = video.duration;
+    gsap.fromTo([vidMeta, vidPRow],
+      { opacity: 0, y: 12 },
+      { opacity: 1, y: 0, duration: .8, stagger: .15,
+        scrollTrigger: { trigger: '#showcase', start: 'top 65%' } }
+    );
+    gsap.fromTo(wrap,
+      { opacity: 0, scale: .97 },
+      { opacity: 1, scale: 1, duration: 1, ease: 'power3.out',
+        scrollTrigger: { trigger: '#showcase', start: 'top 70%', end: 'top 20%', scrub: .8 } }
+    );
+    ScrollTrigger.create({
+      trigger: '#showcase', start: 'top top', end: 'bottom bottom', scrub: true,
+      onEnter() { video.pause(); },
+      onUpdate(self) {
+        const t = self.progress * dur;
+        if (Math.abs(video.currentTime - t) > 0.04) video.currentTime = t;
+        const pct = self.progress * 100;
+        pFill.style.width = pct + '%';
+        pDot.style.left   = pct + '%';
+        pTime.textContent = fmt(t);
+      }
+    });
+  });
+
+  /* ─── Generic .reveal ScrollTrigger ─────── */
+  document.querySelectorAll('.reveal').forEach((el, i) => {
+    gsap.fromTo(el,
+      { opacity: 0, y: 44 },
+      { opacity: 1, y: 0, duration: .95, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 86%' },
+        delay: (i % 3) * 0.08
+      }
+    );
+  });
+
+  /* ─── Counter animation ──────────────────── */
+  document.querySelectorAll('[data-count]').forEach(el => {
+    const target = +el.dataset.count;
+    ScrollTrigger.create({
+      trigger: el, start: 'top 85%', once: true,
+      onEnter() {
+        let start = 0;
+        const step = () => {
+          start += Math.ceil(target / 60);
+          if (start >= target) { el.textContent = target + '+'; return; }
+          el.textContent = start;
+          requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      }
+    });
+  });
+
+  /* ─── Skill bars ─────────────────────────── */
+  document.querySelectorAll('.skill-bar-item').forEach(item => {
+    const fill = item.querySelector('.skill-bar-fill');
+    const pct  = item.dataset.skill;
+    ScrollTrigger.create({
+      trigger: item, start: 'top 88%', once: true,
+      onEnter() { fill.style.width = pct + '%'; }
+    });
+  });
+
+  /* ─── Portfolio img fallback ──────────────── */
+  document.querySelectorAll('.portfolio-item img').forEach(img => {
+    img.addEventListener('error', () => {
+      img.style.display = 'none';
+      const ph = img.nextElementSibling;
+      if (ph && ph.classList.contains('portfolio-placeholder')) ph.style.display = 'flex';
+    });
+  });
+</script>
+</body>
+</html>
