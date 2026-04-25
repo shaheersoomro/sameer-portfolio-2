@@ -5,16 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>BlendArt — 3D Artist & Blender Specialist</title>
 
-  <!-- Bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Playfair+Display:ital,wght@0,400;1,400;1,600&display=swap" rel="stylesheet"/>
-  <!-- GSAP + ScrollTrigger -->
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 
   <style>
-    /* ─── TOKENS ─────────────────────────────── */
     :root {
       --ink:    #090909;
       --ink2:   #0f0f0f;
@@ -26,35 +22,27 @@
       --amber:  #d4a853;
       --amber2: rgba(212,168,83,0.15);
     }
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-
     body {
-      background: var(--ink);
-      color: var(--ivory);
-      font-family: 'DM Mono', monospace;
-      overflow-x: hidden;
+      background: var(--ink); color: var(--ivory);
+      font-family: 'DM Mono', monospace; overflow-x: hidden;
     }
-
-    /* grain */
     body::after {
-      content: '';
-      position: fixed; inset: 0; z-index: 9000; pointer-events: none;
+      content: ''; position: fixed; inset: 0; z-index: 9000; pointer-events: none;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.035'/%3E%3C/svg%3E");
       opacity: .38;
     }
 
-    /* ─── UTILS ──────────────────────────────── */
-    .amber  { color: var(--amber); }
+    /* ── UTILS ─────────────────────────────────── */
+    .amber { color: var(--amber); }
     .eyebrow {
       font-size: .58rem; letter-spacing: .38em; text-transform: uppercase;
       color: var(--amber); display: block; margin-bottom: 1rem;
     }
     .section-title {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(2.8rem, 5vw, 4.5rem);
-      letter-spacing: .04em; line-height: 1;
+      font-size: clamp(2.8rem, 5vw, 4.5rem); letter-spacing: .04em; line-height: 1;
     }
     .section-sub {
       font-size: .7rem; letter-spacing: .06em; line-height: 1.9;
@@ -62,21 +50,18 @@
     }
     .reveal { opacity: 0; transform: translateY(44px); }
 
-    /* ─── NAV ────────────────────────────────── */
+    /* ── NAV ───────────────────────────────────── */
     #navbar {
       position: fixed; top: 0; left: 0; right: 0; z-index: 500;
       display: flex; justify-content: space-between; align-items: center;
-      padding: 1.4rem 3.5rem;
-      transition: background .4s, backdrop-filter .4s;
+      padding: 1.4rem 3.5rem; transition: background .4s, backdrop-filter .4s;
     }
     #navbar.scrolled {
-      background: rgba(9,9,9,0.88);
-      backdrop-filter: blur(14px);
+      background: rgba(9,9,9,0.9); backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
     }
     .nav-logo {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.5rem; letter-spacing: .18em;
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: .18em;
       color: var(--ivory); text-decoration: none;
     }
     .nav-logo span { color: var(--amber); }
@@ -88,217 +73,114 @@
     .nav-links a:hover { color: var(--ivory); }
     .nav-cta {
       font-size: .58rem; letter-spacing: .26em; text-transform: uppercase;
-      color: var(--ink); background: var(--amber);
-      padding: 8px 22px; text-decoration: none;
-      transition: opacity .2s;
+      color: var(--ink); background: var(--amber); padding: 8px 22px;
+      text-decoration: none; transition: opacity .2s;
     }
     .nav-cta:hover { opacity: .8; }
     .nav-burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
-    .nav-burger span { display: block; width: 24px; height: 1px; background: var(--ivory); transition: .3s; }
+    .nav-burger span { display: block; width: 24px; height: 1px; background: var(--ivory); }
 
-    /* ─── HERO ───────────────────────────────── */
+    /* ── HERO ──────────────────────────────────── */
     .hero {
-      height: 100vh;
-      display: flex; flex-direction: column; justify-content: flex-end;
-      padding: 0 3.5rem 5.5rem;
-      padding-top: 600px;
-      position: relative; overflow: hidden;
+      height: 100vh; display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 38rem 3.5rem 5.5rem; position: relative; overflow: hidden;
     }
     .hero-watermark {
-      position: absolute; top: 46%; left: 50%;
-      transform: translate(-50%,-50%);
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(7rem, 19vw, 18rem);
-      white-space: nowrap;
-      color: rgba(240,236,226,0.025);
+      position: absolute; top: 46%; left: 50%; transform: translate(-50%,-50%);
+      font-family: 'Bebas Neue', sans-serif; font-size: clamp(7rem, 19vw, 18rem);
+      white-space: nowrap; color: rgba(240,236,226,0.025);
       user-select: none; pointer-events: none; letter-spacing: -.02em;
     }
     .hero-eyebrow {
       font-size: .6rem; letter-spacing: .4em; text-transform: uppercase;
-      color: var(--amber); margin-bottom: 1.2rem;
-      opacity: 0; transform: translateY(16px);
+      color: var(--amber); margin-bottom: 1.2rem; opacity: 0; transform: translateY(16px);
     }
     .hero-title {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(3.8rem, 9.5vw, 9rem);
-      line-height: .88; letter-spacing: .01em;
+      font-size: clamp(3.8rem, 9.5vw, 9rem); line-height: .88; letter-spacing: .01em;
       opacity: 0; transform: translateY(44px);
     }
-    .hero-title em {
-      font-family: 'Playfair Display', serif;
-      font-style: italic; color: var(--amber);
-    }
+    .hero-title em { font-family: 'Playfair Display', serif; font-style: italic; color: var(--amber); }
     .hero-row {
       display: flex; align-items: flex-end; gap: 3rem;
       margin-top: 2.2rem; opacity: 0; transform: translateY(20px);
     }
-    .hero-sub {
-      font-size: .7rem; letter-spacing: .07em; line-height: 1.95;
-      color: var(--dim); max-width: 360px;
-    }
+    .hero-sub { font-size: .7rem; letter-spacing: .07em; line-height: 1.95; color: var(--dim); max-width: 360px; }
     .hero-btns { display: flex; gap: 1rem; flex-shrink: 0; }
     .btn-primary-custom {
       font-size: .58rem; letter-spacing: .26em; text-transform: uppercase;
-      color: var(--ink); background: var(--amber);
-      padding: 11px 28px; text-decoration: none; transition: opacity .2s;
+      color: var(--ink); background: var(--amber); padding: 11px 28px;
+      text-decoration: none; transition: opacity .2s;
     }
     .btn-primary-custom:hover { opacity: .8; color: var(--ink); }
     .btn-ghost {
       font-size: .58rem; letter-spacing: .26em; text-transform: uppercase;
-      color: var(--ivory);
-      padding: 10px 28px; text-decoration: none;
+      color: var(--ivory); padding: 10px 28px; text-decoration: none;
       border: 1px solid var(--border); transition: border-color .2s;
     }
     .btn-ghost:hover { border-color: var(--amber); color: var(--amber); }
-    .hero-vline {
-      position: absolute; bottom: 0; left: 3.5rem;
-      width: 1px; height: 0; background: var(--amber);
-    }
+    .hero-vline { position: absolute; bottom: 0; left: 3.5rem; width: 1px; height: 0; background: var(--amber); }
 
-    /* ─── SCROLL / VIDEO SECTION ─────────────── */
-    .scroll-section { position: relative; height: 400vh; }
-    .sticky-wrap {
-      position: sticky; top: 0; height: 100vh;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center; overflow: hidden;
-    }
-    .vid-meta {
-      display: flex; justify-content: space-between; align-items: center;
-      width: min(960px, 90vw); margin-bottom: 1.2rem; opacity: 0;
-    }
-    .vid-meta-label {
-      font-size: .55rem; letter-spacing: .3em; text-transform: uppercase; color: var(--dim);
-    }
-    .vid-meta-label span { color: var(--amber); }
-    .video-wrap {
-      position: relative; width: min(960px, 90vw); max-height: 70vh; overflow: hidden;
-    }
-    #blender-video {
-      display: block; width: 100%; height: 100%; object-fit: cover;
-      mix-blend-mode: lighten;
-      filter: brightness(1.1) contrast(1.05) saturate(1.08);
-    }
-    .video-wrap::before {
-      content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none;
-      background:
-        linear-gradient(to right,  var(--ink) 0%, transparent 10%, transparent 90%, var(--ink) 100%),
-        linear-gradient(to bottom, var(--ink) 0%, transparent 8%,  transparent 92%, var(--ink) 100%);
-    }
-    .vid-glow {
-      position: absolute; inset: -80px; z-index: -1; pointer-events: none;
-      background: radial-gradient(ellipse 65% 45% at 50% 50%, rgba(212,168,83,0.07) 0%, transparent 70%);
-    }
-    .vid-progress-row {
-      width: min(960px, 90vw); margin-top: 1.4rem;
-      display: flex; align-items: center; gap: 1.2rem; opacity: 0;
-    }
-    .progress-track {
-      flex: 1; height: 1px; background: rgba(240,236,226,0.1); position: relative;
-    }
-    .progress-fill { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: var(--amber); }
-    .progress-dot {
-      position: absolute; top: 50%; left: 0%; transform: translate(-50%,-50%);
-      width: 6px; height: 6px; border-radius: 50%; background: var(--amber);
-    }
-    .progress-time {
-      font-size: .55rem; letter-spacing: .2em; color: var(--dim); flex-shrink: 0; width: 52px; text-align: right;
-    }
 
-    /* ─── ABOUT ──────────────────────────────── */
-    .about-section {
-      padding: 9rem 3.5rem;
-      display: grid; grid-template-columns: 1fr 1fr; gap: 6rem;
-      max-width: 1200px; margin: 0 auto; align-items: center;
-    }
-    .about-img-wrap {
-      position: relative;
-    }
-    .about-img-wrap img {
-      width: 100%; display: block;
-      filter: grayscale(20%) contrast(1.05);
-    }
-    .about-img-wrap::before {
-      content: '';
-      position: absolute; inset: -12px 12px 12px -12px;
-      border: 1px solid var(--border); z-index: -1;
-    }
-    .about-img-wrap::after {
-      content: '';
-      position: absolute; bottom: -20px; right: -20px;
-      width: 120px; height: 120px;
-      background: var(--amber2);
-      border: 1px solid rgba(212,168,83,0.25);
-      z-index: -1;
-    }
-    .about-text {}
-    .about-text p {
-      font-size: .72rem; line-height: 2.1; letter-spacing: .05em; color: var(--dim);
-      margin-bottom: 1rem;
-    }
-    .stats-row {
-      display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-top: 2.5rem;
-    }
-    .stat-box {
-      border: 1px solid var(--border); padding: 1.4rem 1rem;
-      text-align: center;
-    }
-    .stat-num {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 2.8rem; letter-spacing: .05em; line-height: 1;
-      color: var(--amber); display: block;
-    }
-    .stat-label {
-      font-size: .55rem; letter-spacing: .22em; text-transform: uppercase;
-      color: var(--dim); margin-top: .4rem; display: block;
-    }
 
-    /* ─── MARQUEE ─────────────────────────────── */
+    /* ── MARQUEE ───────────────────────────────── */
     .marquee-section {
       overflow: hidden; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
       padding: 1rem 0; background: var(--ink2);
     }
-    .marquee-track {
-      display: flex; width: max-content;
-      animation: marquee 22s linear infinite;
-    }
+    .marquee-track { display: flex; width: max-content; animation: marquee 22s linear infinite; }
     .marquee-item {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1rem; letter-spacing: .28em; text-transform: uppercase;
-      color: var(--dim2); white-space: nowrap; padding: 0 2.5rem;
+      font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: .28em;
+      text-transform: uppercase; color: var(--dim2); white-space: nowrap; padding: 0 2.5rem;
     }
     .marquee-item .dot { color: var(--amber); margin: 0 .6rem; }
     @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
-    /* ─── SERVICES ───────────────────────────── */
+    /* ── ABOUT ─────────────────────────────────── */
+    .about-section {
+      padding: 9rem 3.5rem; display: grid; grid-template-columns: 1fr 1fr;
+      gap: 6rem; max-width: 1200px; margin: 0 auto; align-items: center;
+    }
+    .about-img-wrap { position: relative; }
+    .about-img-wrap img { width: 100%; display: block; filter: grayscale(20%) contrast(1.05); }
+    .about-img-wrap::before {
+      content: ''; position: absolute; inset: -12px 12px 12px -12px;
+      border: 1px solid var(--border); z-index: -1;
+    }
+    .about-img-wrap::after {
+      content: ''; position: absolute; bottom: -20px; right: -20px;
+      width: 120px; height: 120px; background: var(--amber2);
+      border: 1px solid rgba(212,168,83,0.25); z-index: -1;
+    }
+    .about-text p { font-size: .72rem; line-height: 2.1; letter-spacing: .05em; color: var(--dim); margin-bottom: 1rem; }
+    .stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-top: 2.5rem; }
+    .stat-box { border: 1px solid var(--border); padding: 1.4rem 1rem; text-align: center; }
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; letter-spacing: .05em;
+      line-height: 1; color: var(--amber); display: block;
+    }
+    .stat-label { font-size: .55rem; letter-spacing: .22em; text-transform: uppercase; color: var(--dim); margin-top: .4rem; display: block; }
+
+    /* ── SERVICES ──────────────────────────────── */
     .services-section { padding: 9rem 3.5rem; max-width: 1200px; margin: 0 auto; }
     .services-header { margin-bottom: 4rem; }
     .services-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5px; background: var(--border); }
     .service-card {
       background: var(--card); padding: 3rem 2.5rem;
-      transition: background .3s;
-      position: relative; overflow: hidden;
+      transition: background .3s; position: relative; overflow: hidden;
     }
     .service-card::before {
-      content: '';
-      position: absolute; bottom: 0; left: 0; width: 0; height: 2px;
+      content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px;
       background: var(--amber); transition: width .4s ease;
     }
     .service-card:hover::before { width: 100%; }
     .service-card:hover { background: #141414; }
     .service-num {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 3.5rem; letter-spacing: .04em;
-      color: rgba(212,168,83,0.12); line-height: 1;
-      margin-bottom: 1.5rem; display: block;
+      font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem; letter-spacing: .04em;
+      color: rgba(212,168,83,0.12); line-height: 1; margin-bottom: 1.5rem; display: block;
     }
-    .service-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.5rem; letter-spacing: .1em; margin-bottom: 1rem;
-    }
-    .service-desc {
-      font-size: .68rem; line-height: 1.95; color: var(--dim); letter-spacing: .04em;
-      margin-bottom: 1.5rem;
-    }
+    .service-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: .1em; margin-bottom: 1rem; }
+    .service-desc { font-size: .68rem; line-height: 1.95; color: var(--dim); letter-spacing: .04em; margin-bottom: 1.5rem; }
     .service-list { list-style: none; }
     .service-list li {
       font-size: .6rem; letter-spacing: .12em; color: var(--dim2);
@@ -307,235 +189,197 @@
     }
     .service-list li::before { content: '—'; color: var(--amber); flex-shrink: 0; }
 
-    /* ─── PORTFOLIO ──────────────────────────── */
-    .portfolio-section { padding: 9rem 3.5rem; max-width: 1200px; margin: 0 auto; }
-    .portfolio-header {
+    /* ── VIDEO PORTFOLIO ────────────────────────
+       Each clip gets its own tall scroll-scrub section.
+       A sticky panel holds: index label, video, meta row, progress.
+    ──────────────────────────────────────────── */
+    #portfolio { scroll-margin-top: 80px; }
+    .portfolio-header-row {
+      max-width: 1200px; margin: 0 auto; padding: 9rem 3.5rem 4rem;
       display: flex; justify-content: space-between; align-items: flex-end;
-      margin-bottom: 4rem;
     }
-    .portfolio-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5px; background: var(--border);
-    }
-    .portfolio-item {
-      position: relative; overflow: hidden; background: var(--card);
-      aspect-ratio: 4/3;
-      cursor: pointer;
-    }
-    .portfolio-item img {
-      width: 100%; height: 100%; object-fit: cover;
-      display: block; filter: grayscale(30%) brightness(.85);
-      transition: filter .5s, transform .6s;
-    }
-    .portfolio-item:hover img { filter: grayscale(0%) brightness(1); transform: scale(1.04); }
-    .portfolio-overlay {
-      position: absolute; inset: 0;
-      background: linear-gradient(to top, rgba(9,9,9,0.9) 0%, transparent 55%);
-      display: flex; flex-direction: column; justify-content: flex-end;
-      padding: 1.8rem; opacity: 0; transition: opacity .4s;
-    }
-    .portfolio-item:hover .portfolio-overlay { opacity: 1; }
-    .portfolio-cat {
-      font-size: .52rem; letter-spacing: .3em; text-transform: uppercase;
-      color: var(--amber); margin-bottom: .4rem;
-    }
-    .portfolio-name {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.4rem; letter-spacing: .1em;
-    }
-    /* Placeholder for items without real images */
-    .portfolio-placeholder {
-      width: 100%; height: 100%;
-      background: linear-gradient(135deg, #141414 0%, #1a1a1a 100%);
-      display: flex; align-items: center; justify-content: center;
-    }
-    .portfolio-placeholder-text {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.1rem; letter-spacing: .2em;
-      color: rgba(212,168,83,0.25);
-    }
-    .view-all-link {
-      font-size: .58rem; letter-spacing: .26em; text-transform: uppercase;
-      color: var(--amber); text-decoration: none;
-      display: flex; align-items: center; gap: .5rem;
-      transition: gap .2s;
-    }
-    .view-all-link:hover { gap: .9rem; color: var(--amber); }
 
-    /* ─── SKILLS ─────────────────────────────── */
+    .clip-section {
+      position: relative;
+      height: 350vh; /* tall enough for comfortable scrub */
+    }
+    .clip-sticky {
+      position: sticky; top: 0; height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+
+    /* full-bleed side label + video layout */
+    .clip-layout {
+      display: flex; gap: 3rem; align-items: center;
+      width: min(1160px, 94vw);
+    }
+    .clip-side {
+      flex-shrink: 0; width: 200px; display: flex; flex-direction: column; gap: 1rem;
+    }
+    .clip-index {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 5rem; line-height: 1; letter-spacing: .04em;
+      color: rgba(212,168,83,0.12);
+    }
+    .clip-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem; letter-spacing: .14em; line-height: 1.2;
+      color: var(--ivory);
+    }
+    .clip-cat {
+      font-size: .52rem; letter-spacing: .3em; text-transform: uppercase; color: var(--amber);
+    }
+    .clip-desc {
+      font-size: .6rem; letter-spacing: .08em; line-height: 1.8; color: var(--dim2);
+      margin-top: .5rem;
+    }
+    .clip-prog-wrap { margin-top: 1rem; }
+    .clip-prog-track { height: 1px; background: rgba(240,236,226,0.1); position: relative; margin-bottom: .5rem; }
+    .clip-prog-fill { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: var(--amber); }
+    .clip-prog-dot {
+      position: absolute; top: 50%; left: 0%; transform: translate(-50%,-50%);
+      width: 5px; height: 5px; border-radius: 50%; background: var(--amber);
+    }
+    .clip-time { font-size: .52rem; letter-spacing: .18em; color: var(--dim2); }
+
+    .clip-video-wrap {
+      flex: 1; position: relative; overflow: hidden; min-height: 200px;
+    }
+    .clip-video-wrap video {
+      display: block; width: 100%; height: 100%; max-height: 78vh;
+      object-fit: cover;
+      mix-blend-mode: lighten; filter: brightness(1.1) contrast(1.05) saturate(1.06);
+    }
+    .clip-video-wrap::before {
+      content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+      background:
+        linear-gradient(to right,  var(--ink) 0%, transparent 6%, transparent 94%, var(--ink) 100%),
+        linear-gradient(to bottom, var(--ink) 0%, transparent 6%,  transparent 94%, var(--ink) 100%);
+    }
+    .clip-glow {
+      position: absolute; inset: -60px; z-index: -1; pointer-events: none;
+      background: radial-gradient(ellipse 60% 40% at 50% 50%, rgba(212,168,83,0.06) 0%, transparent 70%);
+    }
+
+    /* nav dots on right edge */
+    .clip-nav-dots {
+      position: fixed; right: 2rem; top: 50%; transform: translateY(-50%);
+      z-index: 400; display: flex; flex-direction: column; gap: 10px;
+    }
+    .clip-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--dim2); cursor: pointer; transition: background .2s, transform .2s;
+    }
+    .clip-dot.active { background: var(--amber); transform: scale(1.4); }
+
+    /* ── SKILLS ─────────────────────────────────── */
     .skills-section { padding: 9rem 3.5rem; background: var(--ink2); }
     .skills-inner { max-width: 1200px; margin: 0 auto; }
     .skills-header { margin-bottom: 4rem; }
     .skills-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; }
     .skill-group-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1rem; letter-spacing: .2em; color: var(--amber);
-      margin-bottom: 1.5rem; display: block;
+      font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: .2em;
+      color: var(--amber); margin-bottom: 1.5rem; display: block;
     }
     .skill-tag-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 3rem; }
     .skill-tag {
       font-size: .58rem; letter-spacing: .2em; text-transform: uppercase;
-      padding: 6px 16px;
-      border: 1px solid var(--border); color: var(--dim); border-radius: 1px;
-      transition: border-color .2s, color .2s;
+      padding: 6px 16px; border: 1px solid var(--border); color: var(--dim);
+      border-radius: 1px; transition: border-color .2s, color .2s;
     }
     .skill-tag:hover { border-color: var(--amber); color: var(--amber); }
-
     .skill-bar-item { margin-bottom: 1.8rem; }
-    .skill-bar-header {
-      display: flex; justify-content: space-between;
-      font-size: .58rem; letter-spacing: .18em; color: var(--dim2);
-      margin-bottom: .6rem;
-    }
-    .skill-bar-track {
-      height: 2px; background: rgba(240,236,226,0.08);
-    }
-    .skill-bar-fill {
-      height: 100%; width: 0%; background: var(--amber);
-      transition: width 1.2s cubic-bezier(.4,0,.2,1);
-    }
+    .skill-bar-header { display: flex; justify-content: space-between; font-size: .58rem; letter-spacing: .18em; color: var(--dim2); margin-bottom: .6rem; }
+    .skill-bar-track { height: 2px; background: rgba(240,236,226,0.08); }
+    .skill-bar-fill { height: 100%; width: 0%; background: var(--amber); transition: width 1.2s cubic-bezier(.4,0,.2,1); }
 
-    /* ─── TESTIMONIALS ───────────────────────── */
+    /* ── TESTIMONIALS ──────────────────────────── */
     .testimonials-section { padding: 9rem 3.5rem; max-width: 1200px; margin: 0 auto; }
     .testimonials-header { margin-bottom: 4rem; }
     .testimonials-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5px; background: var(--border); }
-    .testimonial-card {
-      background: var(--card); padding: 2.8rem 2.4rem;
-    }
-    .quote-mark {
-      font-family: 'Playfair Display', serif;
-      font-size: 4rem; line-height: .8; color: var(--amber);
-      margin-bottom: 1rem; display: block;
-    }
-    .testimonial-text {
-      font-size: .68rem; line-height: 2; color: var(--dim); letter-spacing: .04em;
-      margin-bottom: 2rem;
-      font-style: italic;
-    }
-    .testimonial-author {
-      display: flex; flex-direction: column; gap: .25rem;
-    }
-    .author-name {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1rem; letter-spacing: .15em;
-    }
-    .author-role {
-      font-size: .55rem; letter-spacing: .22em; text-transform: uppercase; color: var(--amber);
-    }
+    .testimonial-card { background: var(--card); padding: 2.8rem 2.4rem; }
+    .quote-mark { font-family: 'Playfair Display', serif; font-size: 4rem; line-height: .8; color: var(--amber); margin-bottom: 1rem; display: block; }
+    .testimonial-text { font-size: .68rem; line-height: 2; color: var(--dim); letter-spacing: .04em; margin-bottom: 2rem; font-style: italic; }
+    .testimonial-author { display: flex; flex-direction: column; gap: .25rem; }
+    .author-name { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: .15em; }
+    .author-role { font-size: .55rem; letter-spacing: .22em; text-transform: uppercase; color: var(--amber); }
     .author-company { font-size: .55rem; letter-spacing: .15em; color: var(--dim2); }
 
-    /* ─── CONTACT ────────────────────────────── */
+    /* ── CONTACT ───────────────────────────────── */
     .contact-section { padding: 9rem 3.5rem; }
     .contact-inner { max-width: 1200px; margin: 0 auto; }
     .contact-header { margin-bottom: 4rem; }
     .contact-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; }
-    .contact-info-item {
-      display: flex; gap: 1.4rem; align-items: flex-start;
-      margin-bottom: 2.5rem;
-    }
+    .contact-info-item { display: flex; gap: 1.4rem; align-items: flex-start; margin-bottom: 2.5rem; }
     .contact-icon {
       width: 42px; height: 42px; border: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-      font-size: .85rem; color: var(--amber);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-size: .85rem; color: var(--amber);
     }
-    .contact-info-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1rem; letter-spacing: .15em; margin-bottom: .35rem;
-    }
-    .contact-info-val {
-      font-size: .64rem; letter-spacing: .1em; color: var(--dim); line-height: 1.8;
-    }
-    /* Form */
+    .contact-info-title { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: .15em; margin-bottom: .35rem; }
+    .contact-info-val { font-size: .64rem; letter-spacing: .1em; color: var(--dim); line-height: 1.8; }
     .form-field { margin-bottom: 1.4rem; }
-    .form-field input,
-    .form-field textarea {
-      width: 100%; background: var(--card);
-      border: 1px solid var(--border); border-radius: 0;
-      color: var(--ivory); padding: 14px 18px;
-      font-family: 'DM Mono', monospace; font-size: .68rem; letter-spacing: .08em;
-      outline: none; transition: border-color .2s; resize: none;
+    .form-field input, .form-field textarea {
+      width: 100%; background: var(--card); border: 1px solid var(--border); border-radius: 0;
+      color: var(--ivory); padding: 14px 18px; font-family: 'DM Mono', monospace;
+      font-size: .68rem; letter-spacing: .08em; outline: none; transition: border-color .2s; resize: none;
     }
-    .form-field input:focus,
-    .form-field textarea:focus { border-color: var(--amber); }
-    .form-field input::placeholder,
-    .form-field textarea::placeholder { color: var(--dim2); }
+    .form-field input:focus, .form-field textarea:focus { border-color: var(--amber); }
+    .form-field input::placeholder, .form-field textarea::placeholder { color: var(--dim2); }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     .btn-submit {
       font-size: .6rem; letter-spacing: .3em; text-transform: uppercase;
-      color: var(--ink); background: var(--amber);
-      padding: 14px 36px; border: none; cursor: pointer;
-      font-family: 'DM Mono', monospace;
-      transition: opacity .2s; width: 100%;
+      color: var(--ink); background: var(--amber); padding: 14px 36px; border: none;
+      cursor: pointer; font-family: 'DM Mono', monospace; transition: opacity .2s; width: 100%;
     }
     .btn-submit:hover { opacity: .85; }
 
-    /* ─── FOOTER ─────────────────────────────── */
-    footer {
-      background: var(--ink2);
-      border-top: 1px solid var(--border);
-    }
+    /* ── FOOTER ────────────────────────────────── */
+    footer { background: var(--ink2); border-top: 1px solid var(--border); }
     .footer-main {
       max-width: 1200px; margin: 0 auto; padding: 5rem 3.5rem 3rem;
       display: grid; grid-template-columns: 2fr 1fr 1fr 1.4fr; gap: 4rem;
     }
-    .footer-brand-name {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.8rem; letter-spacing: .18em;
-      color: var(--ivory); margin-bottom: 1rem; display: block;
-    }
+    .footer-brand-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: .18em; color: var(--ivory); margin-bottom: 1rem; display: block; }
     .footer-brand-name span { color: var(--amber); }
-    .footer-brand-desc {
-      font-size: .65rem; line-height: 1.95; color: var(--dim); letter-spacing: .05em;
-      margin-bottom: 1.8rem;
-    }
-    .footer-col-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: .9rem; letter-spacing: .2em;
-      color: var(--ivory); margin-bottom: 1.5rem; display: block;
-    }
+    .footer-brand-desc { font-size: .65rem; line-height: 1.95; color: var(--dim); letter-spacing: .05em; margin-bottom: 1.8rem; }
+    .footer-col-title { font-family: 'Bebas Neue', sans-serif; font-size: .9rem; letter-spacing: .2em; color: var(--ivory); margin-bottom: 1.5rem; display: block; }
     .footer-links { list-style: none; }
     .footer-links li { margin-bottom: .8rem; }
-    .footer-links a {
-      font-size: .62rem; letter-spacing: .14em; color: var(--dim); text-decoration: none;
-      transition: color .2s;
-    }
+    .footer-links a { font-size: .62rem; letter-spacing: .14em; color: var(--dim); text-decoration: none; transition: color .2s; }
     .footer-links a:hover { color: var(--amber); }
     .newsletter-input-row { display: flex; }
     .newsletter-input {
-      flex: 1; background: var(--card); border: 1px solid var(--border);
-      border-right: none; color: var(--ivory); padding: 10px 14px;
-      font-family: 'DM Mono', monospace; font-size: .6rem; outline: none;
-      transition: border-color .2s;
+      flex: 1; background: var(--card); border: 1px solid var(--border); border-right: none;
+      color: var(--ivory); padding: 10px 14px; font-family: 'DM Mono', monospace;
+      font-size: .6rem; outline: none; transition: border-color .2s;
     }
     .newsletter-input:focus { border-color: var(--amber); }
     .newsletter-btn {
-      background: var(--amber); border: none; padding: 0 16px;
-      color: var(--ink); font-family: 'DM Mono', monospace;
-      font-size: .6rem; cursor: pointer; letter-spacing: .15em;
-      transition: opacity .2s;
+      background: var(--amber); border: none; padding: 0 16px; color: var(--ink);
+      font-family: 'DM Mono', monospace; font-size: .6rem; cursor: pointer; transition: opacity .2s;
     }
     .newsletter-btn:hover { opacity: .85; }
     .footer-bottom {
-      border-top: 1px solid var(--border);
-      max-width: 1200px; margin: 0 auto;
-      padding: 1.6rem 3.5rem;
-      display: flex; justify-content: space-between; align-items: center;
+      border-top: 1px solid var(--border); max-width: 1200px; margin: 0 auto;
+      padding: 1.6rem 3.5rem; display: flex; justify-content: space-between; align-items: center;
     }
     .footer-copy { font-size: .55rem; letter-spacing: .2em; color: var(--dim2); }
     .footer-copy span { color: var(--amber); }
     .footer-made { font-size: .55rem; letter-spacing: .2em; color: var(--dim2); }
 
-    /* ─── RESPONSIVE ─────────────────────────── */
+    /* ── RESPONSIVE ────────────────────────────── */
     @media (max-width: 992px) {
       .about-section   { grid-template-columns: 1fr; gap: 3rem; }
       .services-grid   { grid-template-columns: 1fr; }
-      .portfolio-grid  { grid-template-columns: 1fr 1fr; }
+      .clip-layout     { flex-direction: column; gap: 1.5rem; }
+      .clip-side       { width: 100%; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 1rem; }
+      .clip-index      { font-size: 3rem; }
       .skills-layout   { grid-template-columns: 1fr; }
       .testimonials-grid { grid-template-columns: 1fr; }
       .contact-layout  { grid-template-columns: 1fr; gap: 3rem; }
       .footer-main     { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
-      .portfolio-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
     }
     @media (max-width: 768px) {
       #navbar { padding: 1.2rem 1.5rem; }
@@ -543,16 +387,13 @@
       .nav-burger { display: flex; }
       .hero { padding: 0 1.5rem 4rem; }
       .hero-row { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
-      .about-section, .services-section, .portfolio-section,
-      .skills-section .skills-inner,
-      .testimonials-section, .contact-inner { padding-left: 1.5rem; padding-right: 1.5rem; }
-      .services-section, .portfolio-section,
-      .testimonials-section, .contact-section { padding: 5rem 1.5rem; }
-      .about-section { padding: 5rem 1.5rem; }
-      .portfolio-grid  { grid-template-columns: 1fr; }
+      .about-section, .services-section, .testimonials-section,
+      .contact-section, .skills-section .skills-inner { padding-left: 1.5rem; padding-right: 1.5rem; }
+      .portfolio-header-row { padding: 5rem 1.5rem 2rem; flex-direction: column; align-items: flex-start; gap: 1rem; }
       .form-row { grid-template-columns: 1fr; }
       .footer-main { grid-template-columns: 1fr; padding: 3rem 1.5rem; gap: 2rem; }
       .footer-bottom { flex-direction: column; gap: 6px; padding: 1.5rem; }
+      .clip-nav-dots { display: none; }
     }
   </style>
 </head>
@@ -569,25 +410,16 @@
     <li><a href="#testimonials">Testimonials</a></li>
   </ul>
   <a class="nav-cta" href="#contact">Hire Me</a>
-  <div class="nav-burger" id="burger">
-    <span></span><span></span><span></span>
-  </div>
+  <div class="nav-burger" id="burger"><span></span><span></span><span></span></div>
 </nav>
 
 <!-- ══ HERO ══════════════════════════════════════ -->
 <section class="hero" id="home">
   <div class="hero-watermark">BLENDART</div>
   <p class="hero-eyebrow">3D Artist &amp; Blender Specialist</p>
-  <h1 class="hero-title">
-    Bringing<br/>
-    Products to<br/>
-    <em>Life</em> with 3D
-  </h1>
+  <h1 class="hero-title">Bringing<br/>Products to<br/><em>Life</em> with 3D</h1>
   <div class="hero-row">
-    <p class="hero-sub">
-      Stunning 3D models and visualizations that make your products stand out
-      in advertisements and marketing materials.
-    </p>
+    <p class="hero-sub">Stunning 3D models and visualizations that make your products stand out in advertisements and marketing materials.</p>
     <div class="hero-btns">
       <a class="btn-primary-custom" href="#portfolio">View My Work</a>
       <a class="btn-ghost" href="#contact">Get in Touch</a>
@@ -596,32 +428,9 @@
   <div class="hero-vline"></div>
 </section>
 
-<!-- ══ SCROLL VIDEO ══════════════════════════════ -->
-<section class="scroll-section" id="showcase">
-  <div class="sticky-wrap">
-    <div class="vid-meta" id="vidMeta">
-      <span class="vid-meta-label">Blender <span>Cycles</span> — HDR Lighting</span>
-      <span class="vid-meta-label">Scrub with scroll <span>↓</span></span>
-      <span class="vid-meta-label">4K · Motion Design</span>
-    </div>
-    <div class="video-wrap" id="videoWrap">
-      <div class="vid-glow"></div>
-      <video id="blender-video" src="X4G-CLIP-20001-0520.mp4" muted playsinline preload="auto"></video>
-    </div>
-    <div class="vid-progress-row" id="vidProgressRow">
-      <div class="progress-track">
-        <div class="progress-fill" id="pFill"></div>
-        <div class="progress-dot"  id="pDot"></div>
-      </div>
-      <span class="progress-time" id="pTime">0:00</span>
-    </div>
-  </div>
-</section>
-
 <!-- ══ MARQUEE ════════════════════════════════════ -->
 <div class="marquee-section">
   <div class="marquee-track">
-    <!-- duplicated for seamless loop -->
     <span class="marquee-item">Branding<span class="dot">✦</span></span>
     <span class="marquee-item">Product Design<span class="dot">✦</span></span>
     <span class="marquee-item">Digital Marketing<span class="dot">✦</span></span>
@@ -644,34 +453,26 @@
 <!-- ══ ABOUT ══════════════════════════════════════ -->
 <section class="about-section" id="about">
   <div class="about-img-wrap reveal">
-    <img src="https://shaheersoomro.github.io/sameer-portfolio/assets/author2.png" alt="3D Artist" onerror="this.style.display='none';this.parentElement.style.background='#141414';this.parentElement.style.minHeight='480px'"/>
+    <img src="https://shaheersoomro.github.io/sameer-portfolio/assets/author2.png" alt="3D Artist"
+         onerror="this.style.display='none';this.parentElement.style.background='#141414';this.parentElement.style.minHeight='480px'"/>
   </div>
   <div class="about-text reveal">
     <span class="eyebrow">About Me</span>
     <h2 class="section-title">Professional <span class="amber">3D Artist</span></h2>
     <p class="section-sub" style="max-width:100%">Specializing in product visualization</p>
     <p style="font-size:.7rem;line-height:2.1;letter-spacing:.05em;color:var(--dim);margin-top:1.5rem">
-      I'm passionate about creating stunning 3D visuals that tell stories and evoke
-      emotions. My journey in 3D art began as a hobby and has grown into a full-fledged
-      career where I get to bring ideas to life every day.
+      I'm passionate about creating stunning 3D visuals that tell stories and evoke emotions.
+      My journey in 3D art began as a hobby and has grown into a full-fledged career where I
+      get to bring ideas to life every day.
     </p>
     <p style="font-size:.7rem;line-height:2.1;letter-spacing:.05em;color:var(--dim);margin-top:.8rem">
       When I'm not modeling or animating, you can find me teaching Blender techniques to
       aspiring artists or contributing to open-source 3D projects.
     </p>
     <div class="stats-row" style="margin-top:2.5rem">
-      <div class="stat-box reveal">
-        <span class="stat-num" data-count="50">0</span>
-        <span class="stat-label">Projects Completed</span>
-      </div>
-      <div class="stat-box reveal">
-        <span class="stat-num" data-count="30">0</span>
-        <span class="stat-label">Happy Clients</span>
-      </div>
-      <div class="stat-box reveal">
-        <span class="stat-num" data-count="4">0</span>
-        <span class="stat-label">Years Experience</span>
-      </div>
+      <div class="stat-box reveal"><span class="stat-num" data-count="50">0</span><span class="stat-label">Projects Completed</span></div>
+      <div class="stat-box reveal"><span class="stat-num" data-count="30">0</span><span class="stat-label">Happy Clients</span></div>
+      <div class="stat-box reveal"><span class="stat-num" data-count="4">0</span><span class="stat-label">Years Experience</span></div>
     </div>
   </div>
 </section>
@@ -707,7 +508,7 @@
     <div class="service-card reveal">
       <span class="service-num">03</span>
       <div class="service-title">Animation</div>
-      <p class="service-desc">Engaging product animations that showcase features, demonstrate functionality, or simply add visual appeal to your marketing materials.</p>
+      <p class="service-desc">Engaging product animations that showcase features, demonstrate functionality, or add visual appeal to your marketing materials.</p>
       <ul class="service-list">
         <li>360° rotations</li>
         <li>Exploded views</li>
@@ -717,78 +518,226 @@
   </div>
 </section>
 
-<!-- ══ PORTFOLIO ══════════════════════════════════ -->
-<section class="portfolio-section" id="portfolio">
-  <div class="portfolio-header">
+<!-- ══ PORTFOLIO — 8 scroll-scrubbed clips ═══════ -->
+<div id="portfolio">
+  <div class="portfolio-header-row">
     <div class="reveal">
       <span class="eyebrow">Selected Work</span>
       <h2 class="section-title">My Portfolio</h2>
     </div>
-    <a class="view-all-link reveal" href="#">View Full Portfolio →</a>
+    <p class="section-sub reveal" style="margin-top:0">Scroll through each render — every clip is scrubbed frame-by-frame as you scroll.</p>
   </div>
-  <div class="portfolio-grid">
+</div>
 
-    <div class="portfolio-item reveal">
-      <img src="https://shaheersoomro.github.io/sameer-portfolio/assets/portfolio-6.png"
-           alt="Cosmetic Product"
-           onerror="this.style.display='none'"/>
-      <div class="portfolio-placeholder" style="display:none"><span class="portfolio-placeholder-text">Cosmetics</span></div>
-      <div class="portfolio-overlay">
-        <span class="portfolio-cat">Cosmetics</span>
-        <span class="portfolio-name">Cosmetic Product</span>
+<!-- Side nav dots (8 clips) -->
+<div class="clip-nav-dots" id="clipNavDots">
+  <div class="clip-dot active" data-index="1" title="Clip 01"></div>
+  <div class="clip-dot" data-index="2" title="Clip 02"></div>
+  <div class="clip-dot" data-index="3" title="Clip 03"></div>
+  <div class="clip-dot" data-index="4" title="Clip 04"></div>
+  <div class="clip-dot" data-index="5" title="Clip 05"></div>
+  <div class="clip-dot" data-index="6" title="Clip 06"></div>
+  <div class="clip-dot" data-index="7" title="Clip 07"></div>
+  <div class="clip-dot" data-index="8" title="Clip 08"></div>
+</div>
+
+<!-- CLIP 01 — X4G -->
+<section class="clip-section" id="clip-1" data-clip-index="1">
+  <div class="clip-sticky">
+    <div class="clip-layout">
+      <div class="clip-side">
+        <span class="clip-index">01</span>
+        <span class="clip-cat">Hero Reel</span>
+        <span class="clip-title">X4G Render</span>
+        <span class="clip-desc">Blender Cycles — HDR lighting with photorealistic material shaders and cinematic depth of field.</span>
+        <div class="clip-prog-wrap">
+          <div class="clip-prog-track">
+            <div class="clip-prog-fill"></div>
+            <div class="clip-prog-dot"></div>
+          </div>
+          <span class="clip-time">0:00</span>
+        </div>
+      </div>
+      <div class="clip-video-wrap">
+        <div class="clip-glow"></div>
+        <video src="X4G-CLIP-20001-0520.mp4" muted playsinline preload="auto"></video>
       </div>
     </div>
+  </div>
+</section>
 
-    <div class="portfolio-item reveal">
-      <img src="https://shaheersoomro.github.io/sameer-portfolio/assets/portfolio-7.png"
-           alt="Electronics"
-           onerror="this.style.display='none'"/>
-      <div class="portfolio-overlay">
-        <span class="portfolio-cat">Electronics</span>
-        <span class="portfolio-name">Smartphone Model</span>
+<!-- CLIP 02 -->
+<section class="clip-section" id="clip-2" data-clip-index="2">
+  <div class="clip-sticky">
+    <div class="clip-layout">
+      <div class="clip-side">
+        <span class="clip-index">02</span>
+        <span class="clip-cat">Product Visualization</span>
+        <span class="clip-title">Clip 40001</span>
+        <span class="clip-desc">Blender Cycles — HDR lighting setup with photorealistic material shaders.</span>
+        <div class="clip-prog-wrap">
+          <div class="clip-prog-track">
+            <div class="clip-prog-fill"></div>
+            <div class="clip-prog-dot"></div>
+          </div>
+          <span class="clip-time">0:00</span>
+        </div>
+      </div>
+      <div class="clip-video-wrap">
+        <div class="clip-glow"></div>
+        <video src="clip-40001-0157.mp4" muted playsinline preload="auto"></video>
       </div>
     </div>
+  </div>
+</section>
 
-    <div class="portfolio-item reveal">
-      <img src="https://shaheersoomro.github.io/sameer-portfolio/assets/portfolio-8.png"
-           alt="Packaging"
-           onerror="this.style.display='none'"/>
-      <div class="portfolio-overlay">
-        <span class="portfolio-cat">Packaging</span>
-        <span class="portfolio-name">Beverage Bottle</span>
+<!-- CLIP 03 -->
+<section class="clip-section" id="clip-3" data-clip-index="3">
+  <div class="clip-sticky">
+    <div class="clip-layout">
+      <div class="clip-side">
+        <span class="clip-index">03</span>
+        <span class="clip-cat">Motion Design</span>
+        <span class="clip-title">Clip 50001-A</span>
+        <span class="clip-desc">Geometry nodes driven animation with dynamic particle systems.</span>
+        <div class="clip-prog-wrap">
+          <div class="clip-prog-track">
+            <div class="clip-prog-fill"></div>
+            <div class="clip-prog-dot"></div>
+          </div>
+          <span class="clip-time">0:00</span>
+        </div>
+      </div>
+      <div class="clip-video-wrap">
+        <div class="clip-glow"></div>
+        <video src="clip-50001-0139.mp4" muted playsinline preload="auto"></video>
       </div>
     </div>
+  </div>
+</section>
 
-    <div class="portfolio-item reveal">
-      <img src="https://shaheersoomro.github.io/sameer-portfolio/assets/portfolio-9.png"
-           alt="Furniture"
-           onerror="this.style.display='none'"/>
-      <div class="portfolio-overlay">
-        <span class="portfolio-cat">Furniture</span>
-        <span class="portfolio-name">Modern Chair Design</span>
+<!-- CLIP 04 -->
+<section class="clip-section" id="clip-4" data-clip-index="4">
+  <div class="clip-sticky">
+    <div class="clip-layout">
+      <div class="clip-side">
+        <span class="clip-index">04</span>
+        <span class="clip-cat">3D Animation</span>
+        <span class="clip-title">Clip 50001-B</span>
+        <span class="clip-desc">Advanced rigging and procedural shading with Cycles path tracer.</span>
+        <div class="clip-prog-wrap">
+          <div class="clip-prog-track">
+            <div class="clip-prog-fill"></div>
+            <div class="clip-prog-dot"></div>
+          </div>
+          <span class="clip-time">0:00</span>
+        </div>
+      </div>
+      <div class="clip-video-wrap">
+        <div class="clip-glow"></div>
+        <video src="clip-50001-0591.mp4" muted playsinline preload="auto"></video>
       </div>
     </div>
+  </div>
+</section>
 
-    <div class="portfolio-item reveal">
-      <img src="https://shaheersoomro.github.io/sameer-portfolio/assets/portfolio-10.png"
-           alt="Automotive"
-           onerror="this.style.display='none'"/>
-      <div class="portfolio-overlay">
-        <span class="portfolio-cat">Automotive</span>
-        <span class="portfolio-name">Car Accessory Viz</span>
+<!-- CLIP 05 -->
+<section class="clip-section" id="clip-5" data-clip-index="5">
+  <div class="clip-sticky">
+    <div class="clip-layout">
+      <div class="clip-side">
+        <span class="clip-index">05</span>
+        <span class="clip-cat">Advertising Render</span>
+        <span class="clip-title">D4 Lite 4 Sim</span>
+        <span class="clip-desc">Product render campaign with studio-grade lighting and PBR materials.</span>
+        <div class="clip-prog-wrap">
+          <div class="clip-prog-track">
+            <div class="clip-prog-fill"></div>
+            <div class="clip-prog-dot"></div>
+          </div>
+          <span class="clip-time">0:00</span>
+        </div>
+      </div>
+      <div class="clip-video-wrap">
+        <div class="clip-glow"></div>
+        <video src="d4-lite-4-sim-clip-0001-0496.mp4" muted playsinline preload="auto"></video>
       </div>
     </div>
+  </div>
+</section>
 
-    <div class="portfolio-item reveal">
-      <img src="https://shaheersoomro.github.io/sameer-portfolio/assets/portfolio-11.png"
-           alt="Jewelry"
-           onerror="this.style.display='none'"/>
-      <div class="portfolio-overlay">
-        <span class="portfolio-cat">Jewelry</span>
-        <span class="portfolio-name">Luxury Watch Render</span>
+<!-- CLIP 06 -->
+<section class="clip-section" id="clip-6" data-clip-index="6">
+  <div class="clip-sticky">
+    <div class="clip-layout">
+      <div class="clip-side">
+        <span class="clip-index">06</span>
+        <span class="clip-cat">CGI Compositing</span>
+        <span class="clip-title">Ultra 9</span>
+        <span class="clip-desc">EEVEE Next real-time render with volumetric fog and bloom effects.</span>
+        <div class="clip-prog-wrap">
+          <div class="clip-prog-track">
+            <div class="clip-prog-fill"></div>
+            <div class="clip-prog-dot"></div>
+          </div>
+          <span class="clip-time">0:00</span>
+        </div>
+      </div>
+      <div class="clip-video-wrap">
+        <div class="clip-glow"></div>
+        <video src="extra_clips-ultra_9_clip-__4_.mp4" muted playsinline preload="auto"></video>
       </div>
     </div>
+  </div>
+</section>
 
+<!-- CLIP 07 -->
+<section class="clip-section" id="clip-7" data-clip-index="7">
+  <div class="clip-sticky">
+    <div class="clip-layout">
+      <div class="clip-side">
+        <span class="clip-index">07</span>
+        <span class="clip-cat">Concept Art</span>
+        <span class="clip-title">WhatsApp Reel</span>
+        <span class="clip-desc">Quick-turn concept exploration rendered in Cycles with custom shaders.</span>
+        <div class="clip-prog-wrap">
+          <div class="clip-prog-track">
+            <div class="clip-prog-fill"></div>
+            <div class="clip-prog-dot"></div>
+          </div>
+          <span class="clip-time">0:00</span>
+        </div>
+      </div>
+      <div class="clip-video-wrap">
+        <div class="clip-glow"></div>
+        <video src="WhatsApp_Video_2023-12-14_at_12_51_58_1acf43d9.mp4" muted playsinline preload="auto"></video>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLIP 08 -->
+<section class="clip-section" id="clip-8" data-clip-index="8">
+  <div class="clip-sticky">
+    <div class="clip-layout">
+      <div class="clip-side">
+        <span class="clip-index">08</span>
+        <span class="clip-cat">Product Modeling</span>
+        <span class="clip-title">X101 Plus</span>
+        <span class="clip-desc">High-detail device modeling with accurate geometry and textures for e-commerce.</span>
+        <div class="clip-prog-wrap">
+          <div class="clip-prog-track">
+            <div class="clip-prog-fill"></div>
+            <div class="clip-prog-dot"></div>
+          </div>
+          <span class="clip-time">0:00</span>
+        </div>
+      </div>
+      <div class="clip-video-wrap">
+        <div class="clip-glow"></div>
+        <video src="X101PLUS-CLIP-2-0001-0085.mp4" muted playsinline preload="auto"></video>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -798,7 +747,7 @@
     <div class="skills-header reveal">
       <span class="eyebrow">Expertise</span>
       <h2 class="section-title">My Skills</h2>
-      <p class="section-sub">A comprehensive set of tools and techniques to deliver top-quality 3D models and visualizations for advertising and marketing.</p>
+      <p class="section-sub">A comprehensive set of tools and techniques to deliver top-quality 3D models and visualizations.</p>
     </div>
     <div class="skills-layout">
       <div>
@@ -851,37 +800,33 @@
     <p class="section-sub">What my clients say about my 3D modeling and visualization services.</p>
   </div>
   <div class="testimonials-grid">
-
     <div class="testimonial-card reveal">
       <span class="quote-mark">"</span>
-      <p class="testimonial-text">The 3D renders of our new skincare line were absolutely stunning. They perfectly captured the premium quality of our products and were instrumental in our successful product launch campaign.</p>
+      <p class="testimonial-text">The 3D renders of our new skincare line were absolutely stunning. They perfectly captured the premium quality of our products and were instrumental in our successful launch campaign.</p>
       <div class="testimonial-author">
         <span class="author-name">Sarah Johnson</span>
         <span class="author-role">Marketing Director</span>
         <span class="author-company">BeautyCo</span>
       </div>
     </div>
-
     <div class="testimonial-card reveal">
       <span class="quote-mark">"</span>
-      <p class="testimonial-text">We needed high-quality 3D models of our new device for our website before the physical product was ready. The models were so accurate that customers couldn't tell they weren't photographs.</p>
+      <p class="testimonial-text">We needed high-quality 3D models of our new device before the physical product was ready. The models were so accurate customers couldn't tell they weren't photographs.</p>
       <div class="testimonial-author">
         <span class="author-name">Michael Chen</span>
         <span class="author-role">Product Manager</span>
         <span class="author-company">TechGadgets</span>
       </div>
     </div>
-
     <div class="testimonial-card reveal">
       <span class="quote-mark">"</span>
-      <p class="testimonial-text">Working together on our automotive client's campaign was a pleasure. The attention to detail in the models and the ability to make quick revisions saved us significant time and budget.</p>
+      <p class="testimonial-text">Working together on our automotive client's campaign was a pleasure. Attention to detail and quick revisions saved us significant time and budget.</p>
       <div class="testimonial-author">
         <span class="author-name">David Wilson</span>
         <span class="author-role">Creative Director</span>
         <span class="author-company">AdAgency</span>
       </div>
     </div>
-
   </div>
 </section>
 
@@ -968,109 +913,125 @@
   </div>
   <div class="footer-bottom">
     <span class="footer-copy"><span>©</span> 2024 BlendArt. All rights reserved.</span>
-    <span class="footer-made">Made with <span>♥</span> and Blender</span>
+    <span class="footer-made">Made with ♥ and Blender</span>
   </div>
 </footer>
 
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
   gsap.registerPlugin(ScrollTrigger);
 
-  /* ─── Navbar scroll state ─────────────────── */
+  /* ── navbar ───────────────────────────────── */
   window.addEventListener('scroll', () => {
     document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
   });
 
-  /* ─── Hero entrance ──────────────────────── */
+  /* ── hero entrance ───────────────────────── */
   gsap.timeline({ defaults: { ease: 'power3.out' } })
     .to('.hero-eyebrow', { opacity: 1, y: 0, duration: .9, delay: .3 })
     .to('.hero-title',   { opacity: 1, y: 0, duration: 1.1 }, '-=.55')
     .to('.hero-row',     { opacity: 1, y: 0, duration: .9  }, '-=.6')
     .to('.hero-vline',   { height: 80, duration: 1.1, ease: 'power2.inOut' }, '-=1');
 
-  /* ─── Video scrub ─────────────────────────── */
-  const video   = document.getElementById('blender-video');
-  const pFill   = document.getElementById('pFill');
-  const pDot    = document.getElementById('pDot');
-  const pTime   = document.getElementById('pTime');
-  const wrap    = document.getElementById('videoWrap');
-  const vidMeta = document.getElementById('vidMeta');
-  const vidPRow = document.getElementById('vidProgressRow');
+  /* ── utility ─────────────────────────────── */
   const fmt = s => `${Math.floor(s/60)}:${Math.floor(s%60).toString().padStart(2,'0')}`;
 
-  video.addEventListener('loadedmetadata', () => {
-    const dur = video.duration;
-    gsap.fromTo([vidMeta, vidPRow],
-      { opacity: 0, y: 12 },
-      { opacity: 1, y: 0, duration: .8, stagger: .15,
-        scrollTrigger: { trigger: '#showcase', start: 'top 65%' } }
+  /* ── portfolio clips scrub ───────────────── */
+  document.querySelectorAll('.clip-section').forEach(section => {
+    const video   = section.querySelector('video');
+    const fill    = section.querySelector('.clip-prog-fill');
+    const dot     = section.querySelector('.clip-prog-dot');
+    const timeEl  = section.querySelector('.clip-time');
+    const clipIdx = +section.dataset.clipIndex;
+    const navDot  = document.querySelector(`.clip-dot[data-index="${clipIdx}"]`);
+
+    // entrance animation for the side label
+    gsap.fromTo(section.querySelector('.clip-side'),
+      { opacity: 0, x: -30 },
+      { opacity: 1, x: 0, duration: .9, ease: 'power3.out',
+        scrollTrigger: { trigger: section, start: 'top 75%' } }
     );
-    gsap.fromTo(wrap,
+    gsap.fromTo(section.querySelector('.clip-video-wrap'),
       { opacity: 0, scale: .97 },
       { opacity: 1, scale: 1, duration: 1, ease: 'power3.out',
-        scrollTrigger: { trigger: '#showcase', start: 'top 70%', end: 'top 20%', scrub: .8 } }
+        scrollTrigger: { trigger: section, start: 'top 75%', end: 'top 30%', scrub: .8 } }
     );
-    ScrollTrigger.create({
-      trigger: '#showcase', start: 'top top', end: 'bottom bottom', scrub: true,
-      onEnter() { video.pause(); },
-      onUpdate(self) {
-        const t = self.progress * dur;
-        if (Math.abs(video.currentTime - t) > 0.04) video.currentTime = t;
-        const pct = self.progress * 100;
-        pFill.style.width = pct + '%';
-        pDot.style.left   = pct + '%';
-        pTime.textContent = fmt(t);
-      }
+
+    video.addEventListener('loadedmetadata', () => {
+      const dur = video.duration;
+      video.pause();
+
+      ScrollTrigger.create({
+        trigger: section, start: 'top top', end: 'bottom bottom', scrub: true,
+        onEnter()  { video.pause(); },
+        onUpdate(self) {
+          const t = self.progress * dur;
+          if (Math.abs(video.currentTime - t) > 0.04) video.currentTime = t;
+          const pct = self.progress * 100;
+          fill.style.width = pct + '%';
+          dot.style.left   = pct + '%';
+          timeEl.textContent = fmt(t);
+        },
+        onEnterBack() { video.pause(); }
+      });
+
+      // active nav dot
+      ScrollTrigger.create({
+        trigger: section, start: 'top center', end: 'bottom center',
+        onEnter()     { setActiveDot(clipIdx); },
+        onEnterBack() { setActiveDot(clipIdx); }
+      });
     });
   });
 
-  /* ─── Generic .reveal ScrollTrigger ─────── */
+  function setActiveDot(idx) {
+    document.querySelectorAll('.clip-dot').forEach(d => d.classList.remove('active'));
+    const d = document.querySelector(`.clip-dot[data-index="${idx}"]`);
+    if (d) d.classList.add('active');
+  }
+
+  /* ── nav dot click → scroll to section ──── */
+  document.querySelectorAll('.clip-dot').forEach(dot => {
+    dot.addEventListener('click', () => {
+      const idx = +dot.dataset.index;
+      const target = document.getElementById(`clip-${idx}`);
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  /* ── generic reveal ──────────────────────── */
   document.querySelectorAll('.reveal').forEach((el, i) => {
     gsap.fromTo(el,
       { opacity: 0, y: 44 },
       { opacity: 1, y: 0, duration: .95, ease: 'power3.out',
-        scrollTrigger: { trigger: el, start: 'top 86%' },
-        delay: (i % 3) * 0.08
-      }
+        delay: (i % 3) * 0.08,
+        scrollTrigger: { trigger: el, start: 'top 86%' } }
     );
   });
 
-  /* ─── Counter animation ──────────────────── */
+  /* ── counters ────────────────────────────── */
   document.querySelectorAll('[data-count]').forEach(el => {
     const target = +el.dataset.count;
     ScrollTrigger.create({
       trigger: el, start: 'top 85%', once: true,
       onEnter() {
-        let start = 0;
+        let n = 0;
         const step = () => {
-          start += Math.ceil(target / 60);
-          if (start >= target) { el.textContent = target + '+'; return; }
-          el.textContent = start;
-          requestAnimationFrame(step);
+          n += Math.ceil(target / 60);
+          if (n >= target) { el.textContent = target + '+'; return; }
+          el.textContent = n; requestAnimationFrame(step);
         };
         requestAnimationFrame(step);
       }
     });
   });
 
-  /* ─── Skill bars ─────────────────────────── */
+  /* ── skill bars ──────────────────────────── */
   document.querySelectorAll('.skill-bar-item').forEach(item => {
     const fill = item.querySelector('.skill-bar-fill');
-    const pct  = item.dataset.skill;
     ScrollTrigger.create({
       trigger: item, start: 'top 88%', once: true,
-      onEnter() { fill.style.width = pct + '%'; }
-    });
-  });
-
-  /* ─── Portfolio img fallback ──────────────── */
-  document.querySelectorAll('.portfolio-item img').forEach(img => {
-    img.addEventListener('error', () => {
-      img.style.display = 'none';
-      const ph = img.nextElementSibling;
-      if (ph && ph.classList.contains('portfolio-placeholder')) ph.style.display = 'flex';
+      onEnter() { fill.style.width = item.dataset.skill + '%'; }
     });
   });
 </script>
